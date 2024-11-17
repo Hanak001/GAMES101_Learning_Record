@@ -49,22 +49,23 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio,
     // TODO: Implement this function
     // Create the projection matrix for the given parameters.
     // Then return it.
+    float n=-zNear,f=-zFar;
     Eigen::Matrix4f persp;
-    persp<< zNear, 0, 0, 0,
-            0, zNear, 0 ,0,
-            0, 0, zNear+zFar, -zNear*zFar,
+    persp<< n, 0, 0, 0,
+            0, n, 0 ,0,
+            0, 0, n+f, -n*f,
             0, 0, 1, 0;
     
     Eigen::Matrix4f orthTran,orthScale;
-    float t=std::tan(eye_fov/2/180*MY_PI)*(zNear),b=-t;
+    float t=std::tan(eye_fov/2/180*MY_PI)*abs(n),b=-t;
     float r=aspect_ratio*t,l=-r;
     orthTran<< 1, 0 ,0 ,0,
             0, 1, 0 ,0,
-            0, 0, 1, -(zNear*zFar)/2,
+            0, 0, 1, -(n*f)/2,
             0, 0, 0, 1;
     orthScale<<2/(r-l),0,0,0,
                 0,2/(t-b),0,0,
-                0,0,2/(zNear-zFar),0,
+                0,0,2/(n-f),0,
                 0,0,0,1;
     projection=orthScale*orthTran*persp;
     return projection;
